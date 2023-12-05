@@ -3,12 +3,12 @@
 import { revalidatePath } from "../../node_modules/next/cache";
 
 export async function getGuruCard(query: string) {
+  const apiKey = process.env.BASIC_AUTH;
   const options = {
     method: "GET",
     headers: {
       accept: "application/json",
-      authorization:
-        ,
+      authorization: `${apiKey}`,
     },
   };
   const res = await fetch(
@@ -17,7 +17,7 @@ export async function getGuruCard(query: string) {
   );
   const fact = await res.json();
   const parsedData = JSON.parse(JSON.stringify(fact));
-  console.log(parsedData);
+  //   console.log(parsedData);
   return parsedData;
 }
 
