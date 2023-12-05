@@ -8,6 +8,7 @@ export async function getGuruCard(query: string) {
     headers: {
       accept: "application/json",
       authorization:
+        ,
     },
   };
   const res = await fetch(
@@ -16,7 +17,7 @@ export async function getGuruCard(query: string) {
   );
   const fact = await res.json();
   const parsedData = JSON.parse(JSON.stringify(fact));
-
+  console.log(parsedData);
   return parsedData;
 }
 

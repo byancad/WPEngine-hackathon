@@ -8,8 +8,10 @@ import { useState } from "react";
 import {
   Card,
   CardHeader,
+  Center,
   Container,
   CardBody,
+  Button,
   CardFooter,
   Text,
 } from "@chakra-ui/react";
@@ -26,25 +28,26 @@ export default function SearchForm() {
   console.log(searchQuery);
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </label>
-        <button type="submit">Search</button>
-        <Card h={"300px"} color="white">
-          <Text>Yes</Text>
-          {searchResults.map((r: any) => {
-            return (
-              <Text color="tomato" fontSize="50px">
-                {r.content}
-              </Text>
-            );
-          })}
-        </Card>
-      </form>
+      <Center h="100px" color="white">
+        <form onSubmit={handleSubmit}>
+          <label>
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </label>
+          <Button type="submit">Search</Button>
+        </form>
+      </Center>
+      <Card>
+        {searchResults.map((r: any) => {
+          return (
+            <Text color="tomato" fontSize="px">
+              {r.highlightedBodyContent}
+            </Text>
+          );
+        })}
+      </Card>
     </div>
   );
 }
