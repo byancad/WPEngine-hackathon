@@ -4,6 +4,7 @@ import { revalidatePath } from "../../node_modules/next/cache";
 
 export async function getGuruCard(query: string) {
   const apiKey = process.env.BASIC_AUTH;
+
   const options = {
     method: "GET",
     headers: {
@@ -12,7 +13,7 @@ export async function getGuruCard(query: string) {
     },
   };
   const res = await fetch(
-    `https://api.getguru.com/api/v1/search/query?searchTerms=${query}&queryType=cards&showArchived=false&maxResults=1&includeCardAttributes=true`,
+    `https://api.getguru.com/api/v1/search/query?searchTerms=${query}&queryType=cards&showArchived=false&maxResults=2&includeCardAttributes=true`,
     options
   );
   const fact = await res.json();
@@ -25,4 +26,23 @@ export async function submitSearch(prevState: any, formData: FormData) {
   const searchGuruCard = await getGuruCard("");
   revalidatePath("/");
   console.log(searchGuruCard);
+}
+
+export async function getJiraCard(query: string) {
+  const jiraKey = process.env.JIRA_AUTH;
+
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: `${jiraKey}`,
+    },
+  };
+  const res = await fetch(
+    `https://searchcowboy.atlassian.net/rest/api/2/issue/picker?query=${query}`,
+    options
+  );
+  const jiraResult = await res.json();
+  //   console.log(jiraResult);
+  return jiraResult;
 }

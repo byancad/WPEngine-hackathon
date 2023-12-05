@@ -1,6 +1,6 @@
 "use client";
 
-import { getGuruCard, submitSearch } from "@/app/actions";
+import { getGuruCard, getJiraCard } from "@/app/actions";
 import SearchButton from "./SearchButton";
 import { useSearchParams } from "../../node_modules/next/navigation";
 import { FormEvent } from "react";
@@ -13,19 +13,42 @@ import {
   CardBody,
   Button,
   CardFooter,
+  Stack,
+  Heading,
+  Link,
   Text,
 } from "@chakra-ui/react";
 
 export default function SearchForm() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const results = await getGuruCard(searchQuery);
-    setSearchResults(results);
-    console.log(results);
+    const guruResults = await getGuruCard(searchQuery);
+    const jiraResults = await getJiraCard(searchQuery);
+
+    const formattedGuruResults = guruResults.map((r: any) => {
+      return {
+        content: r.highlightedBodyContent,
+        slug: r.slug,
+        title: r.preferredPhrase,
+      };
+    });
+
+    const formattedJiraResults = jiraResults.sections[0].issues.map(
+      (r: any) => {
+        return { content: r.summary, slug: r.key, title: r.summaryText };
+      }
+    );
+    console.log(formattedJiraResults);
+
+    // const jiraResult = await getJiraCard("down");
+    // console.log(jiraResult);
+    // setSearchResults(results);
+    // console.log(guruResults);
   };
-  console.log(searchQuery);
+
   return (
     <div>
       <Center h="100px" color="white">
@@ -39,15 +62,24 @@ export default function SearchForm() {
           <Button type="submit">Search</Button>
         </form>
       </Center>
-      <Card>
-        {searchResults.map((r: any) => {
-          return (
-            <Text color="tomato" fontSize="px">
-              {r.highlightedBodyContent}
-            </Text>
-          );
-        })}
-      </Card>
+
+      <Stack spacing="4">
+        {searchResults.map((r: any) => (
+          <Card>
+            <CardHeader>
+              <Heading size="md">{r.preferredPhrase}</Heading>
+            </CardHeader>
+            <CardBody>
+              <Text>{r.highlightedBodyContent}</Text>
+            </CardBody>
+            <CardFooter>
+              <Link href={`https://app.getguru.com/card/${r.slug}`}>
+                Guru Link
+              </Link>
+            </CardFooter>
+          </Card>
+        ))}
+      </Stack>
     </div>
   );
 }
