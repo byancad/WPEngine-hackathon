@@ -43,6 +43,25 @@ export async function getJiraCard(query: string) {
     options
   );
   const jiraResult = await res.json();
-  //   console.log(jiraResult);
+  console.log(jiraResult.sections[0].issues);
   return jiraResult;
+}
+
+export async function getJiraDescription(query: string) {
+  const jiraKey = process.env.JIRA_AUTH;
+
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: `${jiraKey}`,
+    },
+  };
+  const res = await fetch(
+    `https://searchcowboy.atlassian.net/rest/api/2/issue/${query}`,
+    options
+  );
+  const jiraDescription = await res.json();
+  console.log(jiraDescription);
+  return jiraDescription;
 }

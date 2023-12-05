@@ -1,9 +1,6 @@
 "use client";
 
-import { getGuruCard, getJiraCard } from "@/app/actions";
-import SearchButton from "./SearchButton";
-import { useSearchParams } from "../../node_modules/next/navigation";
-import { FormEvent } from "react";
+import { getGuruCard, getJiraCard, getJiraDescription } from "@/app/actions";
 import { useState } from "react";
 import {
   Card,
@@ -21,7 +18,7 @@ import {
 
 export default function SearchForm() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -31,19 +28,38 @@ export default function SearchForm() {
     const formattedGuruResults = guruResults.map((r: any) => {
       return {
         content: r.highlightedBodyContent,
-        slug: r.slug,
+        url: `https://app.getguru.com/card/${r.slug}`,
         title: r.preferredPhrase,
       };
     });
-    console.log({ formattedGuruResults });
-    const formattedJiraResults = jiraResults.sections[0].issues.map(
-      (r: any) => {
-        return { content: r.summary, slug: r.key, title: r.summaryText };
-      }
-    );
-    console.log({ formattedJiraResults });
 
-    setSearchResults(formattedJiraResults.concat(formattedGuruResults));
+    const getIdFromJiraResult = await Promise.all(
+      jiraResults.sections[0].issues.map((r: any) => {
+        return getJiraDescription(r.key);
+      })
+    );
+
+    // const formattedJiraResults = jiraResults.sections[0].issues.map(
+    //   (r: any) => {
+    //     return {
+    //       content: r.summary,
+    //       url: `https://searchcowboy.atlassian.net/browse/${r.key}`,
+    //       title: r.summaryText,
+    //     };
+    //   }
+    // );
+
+    const formattedJiraDescription = getIdFromJiraResult.map((r: any) => {
+      return {
+        content: r.fields.description,
+        title: r.fields.summary,
+        url: `https://searchcowboy.atlassian.net/browse/${r.key}`,
+      };
+    });
+
+    console.log({ formattedJiraDescription });
+
+    setSearchResults([...formattedGuruResults, ...formattedJiraDescription]);
   };
 
   return (
@@ -64,15 +80,13 @@ export default function SearchForm() {
         {searchResults.map((r: any) => (
           <Card>
             <CardHeader>
-              <Heading size="md">{r.content}</Heading>
+              <Heading size="md">{r.title}</Heading>
             </CardHeader>
             <CardBody>
-              <Text>{r.title}</Text>
+              <Text>{r.content}</Text>
             </CardBody>
             <CardFooter>
-              <Link href={`https://app.getguru.com/card/${r.slug}`}>
-                Guru Link
-              </Link>
+              <Link href={`${r.url}`}>Visit Link</Link>
             </CardFooter>
           </Card>
         ))}
