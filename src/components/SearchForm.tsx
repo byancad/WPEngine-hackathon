@@ -35,18 +35,15 @@ export default function SearchForm() {
         title: r.preferredPhrase,
       };
     });
-
+    console.log({ formattedGuruResults });
     const formattedJiraResults = jiraResults.sections[0].issues.map(
       (r: any) => {
         return { content: r.summary, slug: r.key, title: r.summaryText };
       }
     );
-    console.log(formattedJiraResults);
+    console.log({ formattedJiraResults });
 
-    // const jiraResult = await getJiraCard("down");
-    // console.log(jiraResult);
-    // setSearchResults(results);
-    // console.log(guruResults);
+    setSearchResults(formattedJiraResults.concat(formattedGuruResults));
   };
 
   return (
@@ -67,10 +64,10 @@ export default function SearchForm() {
         {searchResults.map((r: any) => (
           <Card>
             <CardHeader>
-              <Heading size="md">{r.preferredPhrase}</Heading>
+              <Heading size="md">{r.content}</Heading>
             </CardHeader>
             <CardBody>
-              <Text>{r.highlightedBodyContent}</Text>
+              <Text>{r.title}</Text>
             </CardBody>
             <CardFooter>
               <Link href={`https://app.getguru.com/card/${r.slug}`}>
