@@ -98,12 +98,14 @@ export default function SearchForm() {
               </Heading>
             </CardHeader>
             <CardBody>
-              <Text pt="2" fontSize="sm">
+              <Text pt="2" fontSize="md">
                 {r.content}
               </Text>
             </CardBody>
             <CardFooter>
-              <Link href={`${r.url}`}>Visit Link</Link>
+              <Link fontsize="sm" href={`${r.url}`}>
+                {r.url}
+              </Link>
             </CardFooter>
           </Card>
         ))}
