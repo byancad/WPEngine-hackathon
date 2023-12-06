@@ -73,6 +73,7 @@ export default function SearchForm() {
             <input
               style={{
                 color: "black",
+                border: "grey solid 1px",
                 backgroundColor: "white",
                 padding: "20px",
                 width: "32rem",
