@@ -14,6 +14,7 @@ import {
   Heading,
   Link,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 
 export default function SearchForm() {
@@ -64,26 +65,41 @@ export default function SearchForm() {
 
   return (
     <div>
+      <Heading py={2}>Search Cowboy</Heading>
+
       <Center h="100px" color="white">
         <form onSubmit={handleSubmit}>
           <label>
             <input
+              style={{
+                color: "black",
+                backgroundColor: "white",
+                padding: "20px",
+                width: "32rem",
+                height: "2.5rem",
+                borderRadius: ".25rem",
+              }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </label>
-          <Button type="submit">Search</Button>
+          <Button bgColor={"#1dc0c9"} m={2} type="submit">
+            Search
+          </Button>
         </form>
       </Center>
-
-      <Stack spacing="4">
+      <Stack m="6" spacing="3">
         {searchResults.map((r: any) => (
-          <Card>
+          <Card boxShadow="dark-lg">
             <CardHeader>
-              <Heading size="md">{r.title}</Heading>
+              <Heading size="md" textTransform="uppercase">
+                {r.title}
+              </Heading>
             </CardHeader>
             <CardBody>
-              <Text>{r.content}</Text>
+              <Text pt="2" fontSize="sm">
+                {r.content}
+              </Text>
             </CardBody>
             <CardFooter>
               <Link href={`${r.url}`}>Visit Link</Link>
